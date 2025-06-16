@@ -1,0 +1,34 @@
+FROM debian:bookworm
+
+# Configuration du timezone
+ENV TIMEZONE=Europe/Paris
+
+# Installation des dépendances nécessaires
+RUN apt-get update && apt-get install -y \
+    ncat \
+    gcc \
+    make \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copie du code source
+COPY ./ /app
+WORKDIR /app
+
+# Compilation du projet
+RUN make clean && make
+
+# Création d'un utilisateur non-privilégié pour la sécurité
+RUN useradd --home=/rubiks -U rubiks
+
+# Attribution des permissions
+RUN chown rubiks:rubiks /app/rubiks
+RUN chmod 755 /app/rubiks
+
+# Changement vers l'utilisateur non-privilégié
+USER rubiks
+
+# Exposition du port
+EXPOSE 4002
+
+# Commande pour lancer le service avec netcat
+CMD ["sh", "-c", "ncat -e /app/rubiks -l 4002 -k"]

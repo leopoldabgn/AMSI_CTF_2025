@@ -1,0 +1,16 @@
+# Ignore git files
+.git
+.gitignore
+
+# Ignore documentation files
+README.md
+
+# Ignore Docker files
+Dockerfile
+.dockerignore
+start.sh
+
+# Ignore temporary files
+*.o
+*.tmp
+*~
